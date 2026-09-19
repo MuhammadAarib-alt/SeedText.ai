@@ -4,56 +4,63 @@
     <!-- Soft ambient background that fades to fully transparent at the edges,
          so the logo blends into whatever glass surface sits behind it. -->
     <radialGradient id="bgFade" cx="50%" cy="42%" r="74%">
-      <stop offset="0%" stop-color="#dbeafe" stop-opacity="0.95"/>
-      <stop offset="42%" stop-color="#dbeafe" stop-opacity="0.75"/>
-      <stop offset="72%" stop-color="#dbeafe" stop-opacity="0.28"/>
-      <stop offset="100%" stop-color="#dbeafe" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#cfe3fb" stop-opacity="0.9"/>
+      <stop offset="42%" stop-color="#cfe3fb" stop-opacity="0.65"/>
+      <stop offset="72%" stop-color="#cfe3fb" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#cfe3fb" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="ribbon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#dbeafe"/>
-      <stop offset="45%" stop-color="#bfdbfe"/>
-      <stop offset="100%" stop-color="#93c5fd"/>
+      <stop offset="0%" stop-color="#a7c9f2"/>
+      <stop offset="50%" stop-color="#6ba3e8"/>
+      <stop offset="100%" stop-color="#4a86d8"/>
     </linearGradient>
     <linearGradient id="wand" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#dbeafe"/>
-      <stop offset="50%" stop-color="#eff6ff"/>
-      <stop offset="100%" stop-color="#bfdbfe"/>
+      <stop offset="0%" stop-color="#8fb8ec"/>
+      <stop offset="50%" stop-color="#c9ddf7"/>
+      <stop offset="100%" stop-color="#5f97dd"/>
     </linearGradient>
     <linearGradient id="star" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#d6e9fc"/>
+      <stop offset="100%" stop-color="#bcd7f7"/>
     </linearGradient>
+    <!-- Lifts the mark off light glass panels so it reads at 24-32px -->
+    <filter id="lift" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="7" flood-color="#1e40af" flood-opacity="0.22"/>
+    </filter>
   </defs>
 
   <!-- Feathered background glow (no hard edges) -->
   <rect width="512" height="512" fill="url(#bgFade)"/>
 
-  <!-- S-ribbon (behind the wand) -->
-  <g fill="none" stroke="url(#ribbon)" stroke-linecap="round">
-    <path d="M436 142 C 330 96 218 128 196 226 C 180 296 232 330 306 336" stroke-width="40" opacity="0.95"/>
-    <path d="M306 336 C 392 344 442 388 430 452 C 418 512 330 522 282 478" stroke-width="40" opacity="0.95"/>
-  </g>
-  <!-- ribbon edge highlights -->
-  <g fill="none" stroke="#ffffff" stroke-linecap="round" opacity="0.55">
-    <path d="M436 132 C 336 88 226 118 200 210" stroke-width="7"/>
-    <path d="M422 444 C 412 496 336 506 292 470" stroke-width="7"/>
-  </g>
+  <!-- Mark -->
+  <g filter="url(#lift)">
+    <!-- S-ribbon (behind the wand) -->
+    <g fill="none" stroke="url(#ribbon)" stroke-linecap="round">
+      <path d="M436 142 C 330 96 218 128 196 226 C 180 296 232 330 306 336" stroke-width="42"/>
+      <path d="M306 336 C 392 344 442 388 430 452 C 418 512 330 522 282 478" stroke-width="42"/>
+    </g>
+    <!-- ribbon glass highlights -->
+    <g fill="none" stroke="#ffffff" stroke-linecap="round" opacity="0.65">
+      <path d="M432 130 C 338 90 230 118 202 206" stroke-width="8"/>
+      <path d="M420 440 C 410 488 340 498 296 466" stroke-width="8"/>
+    </g>
 
-  <!-- Wand -->
-  <g stroke-linecap="round">
-    <line x1="170" y1="440" x2="352" y2="196" stroke="url(#wand)" stroke-width="46"/>
-    <line x1="178" y1="428" x2="344" y2="206" stroke="#ffffff" stroke-width="12" opacity="0.7"/>
-  </g>
+    <!-- Wand -->
+    <g stroke-linecap="round">
+      <line x1="170" y1="440" x2="352" y2="196" stroke="url(#wand)" stroke-width="48"/>
+      <line x1="180" y1="426" x2="342" y2="208" stroke="#ffffff" stroke-width="13" opacity="0.75"/>
+    </g>
 
-  <!-- Star at the tip -->
-  <g transform="translate(360 172) rotate(-22)">
-    <path d="M0,-60 L14.7,-20.2 L57.1,-18.5 L23.8,7.7 L35.3,48.5 L0,25 L-35.3,48.5 L-23.8,7.7 L-57.1,-18.5 L-14.7,-20.2 Z"
-          fill="url(#star)" stroke="#ffffff" stroke-width="10" stroke-linejoin="round"/>
-    <path d="M0,-60 L14.7,-20.2 L57.1,-18.5 L23.8,7.7 L35.3,48.5 L0,25 L-35.3,48.5 L-23.8,7.7 L-57.1,-18.5 L-14.7,-20.2 Z"
-          fill="url(#star)" stroke="url(#star)" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Star at the tip -->
+    <g transform="translate(360 172) rotate(-22)">
+      <path d="M0,-60 L14.7,-20.2 L57.1,-18.5 L23.8,7.7 L35.3,48.5 L0,25 L-35.3,48.5 L-23.8,7.7 L-57.1,-18.5 L-14.7,-20.2 Z"
+            fill="url(#star)" stroke="#5f97dd" stroke-width="12" stroke-linejoin="round"/>
+      <path d="M0,-60 L14.7,-20.2 L57.1,-18.5 L23.8,7.7 L35.3,48.5 L0,25 L-35.3,48.5 L-23.8,7.7 L-57.1,-18.5 L-14.7,-20.2 Z"
+            fill="url(#star)" stroke="#ffffff" stroke-width="5" stroke-linejoin="round"/>
+    </g>
   </g>
 
   <!-- small sparkle -->
   <path d="M448 420 L454 440 L474 446 L454 452 L448 472 L442 452 L422 446 L442 440 Z"
-        fill="#dbeafe" opacity="0.9"/>
+        fill="#93c5fd" opacity="0.95"/>
 </svg>
