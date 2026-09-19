@@ -141,7 +141,7 @@ export default function Dashboard() {
       setStatus("done");
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
-        setStatus((prev) => (prev === "streaming" ? "idle" : prev));
+        setStatus("idle");
         return;
       }
       setError(
@@ -152,8 +152,12 @@ export default function Dashboard() {
   };
 
   const stop = () => {
-    abortRef.current?.abort();
-    setStatus("done");
+    const controller = abortRef.current;
+    abortRef.current = null; // detach first so the abort rejection can't race
+    controller?.abort();
+    // Keep whatever streamed in and drop back to the idle toolbar — the
+    // article body stays visible because `draft` is non-empty.
+    setStatus("idle");
   };
 
   const copyDraft = async () => {
@@ -200,7 +204,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2">
             <span className="glass-chip hidden text-[11px] font-medium text-muted-foreground sm:inline-flex">
               <Sparkles className="size-3 text-primary" />
-              deepseek-v4-flash:free
+              SeedText AI
             </span>
             <Button asChild variant="outline" className="rounded-xl border-white/60 bg-white/50">
               <a href="/">
@@ -226,7 +230,14 @@ export default function Dashboard() {
               className="mt-5 space-y-4"
               onSubmit={(e) => {
                 e.preventDefault();
-                if (!isStreaming) void generate();
+                // The action button below never unmounts (prevents
+                // click-swap races between Stop and Generate), so a submit
+                // means "stop" while streaming and "generate" otherwise.
+                if (isStreaming) {
+                  stop();
+                  return;
+                }
+                void generate();
               }}
             >
               <div className="space-y-1.5">
@@ -280,26 +291,28 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              {isStreaming ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-11 w-full rounded-xl border-white/60 bg-white/60"
-                  onClick={stop}
-                >
-                  <CircleStop className="size-4 text-destructive" />
-                  Stop generating
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  className="h-11 w-full rounded-xl text-[15px] shadow-lg shadow-primary/30"
-                  disabled={!topic.trim()}
-                >
-                  <Wand2 className="size-4" />
-                  Generate Article Draft
-                </Button>
-              )}
+              <Button
+                type="submit"
+                variant={isStreaming ? "outline" : "default"}
+                className={
+                  isStreaming
+                    ? "h-11 w-full rounded-xl border-white/60 bg-white/60"
+                    : "h-11 w-full rounded-xl text-[15px] shadow-lg shadow-primary/30"
+                }
+                disabled={!isStreaming && !topic.trim()}
+              >
+                {isStreaming ? (
+                  <>
+                    <CircleStop className="size-4 text-destructive" />
+                    Stop generating
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="size-4" />
+                    Generate Article Draft
+                  </>
+                )}
+              </Button>
             </form>
 
             {/* Quick-start examples */}

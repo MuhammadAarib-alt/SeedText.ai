@@ -46,12 +46,12 @@ const FEATURES = [
   {
     icon: Gauge,
     title: "Zero-cost pipeline",
-    body: "Runs on OpenRouter's free DeepSeek V4 Flash endpoint. No credits, no subscriptions, no per-word bills — ever.",
+    body: "Runs on SeedText AI's free drafting engine. No credits, no subscriptions, no per-word bills — ever.",
   },
   {
     icon: ShieldCheck,
     title: "Key stays server-side",
-    body: "Generation runs behind an authenticated API route. Your OpenRouter key never touches the browser or the bundle.",
+    body: "Generation runs behind an authenticated API route. Your API keys never touch the browser or the bundle.",
   },
 ];
 
@@ -86,8 +86,8 @@ export default function Landing() {
           <Link to="/" className="flex items-center gap-2.5">
             <img src={logo} alt="" className="size-8 rounded-lg" />
             <span className="text-[15px] font-bold tracking-tight text-foreground">
-              DraftStreamer
-            </span>
+            SeedText
+          </span>
           </Link>
           <nav className="hidden items-center gap-1 text-sm text-muted-foreground md:flex">
             <a href="#features" className="rounded-lg px-3 py-1.5 transition-colors hover:bg-white/50 hover:text-foreground">
@@ -118,7 +118,7 @@ export default function Landing() {
         >
           <span className="glass-chip text-xs font-medium text-foreground/80">
             <Sparkles className="size-3.5 text-primary" />
-            Powered by DeepSeek · free forever
+            Powered by SeedText AI · free forever
           </span>
         </motion.div>
 
@@ -141,7 +141,7 @@ export default function Landing() {
           transition={{ duration: 0.55, delay: 0.16 }}
           className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg"
         >
-          DraftStreamer turns any niche keyword into a structured, publish-ready
+          SeedText turns any niche keyword into a structured, publish-ready
           Markdown article — streamed live to your workspace in seconds, for
           exactly $0.
         </motion.p>
@@ -232,7 +232,7 @@ export default function Landing() {
         <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="text-center">
           <span className="glass-chip text-xs font-medium text-foreground/80">
             <Sparkles className="size-3.5 text-primary" />
-            Why DraftStreamer
+            Why SeedText
           </span>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             A draft engine built for niche publishers
@@ -310,18 +310,15 @@ export default function Landing() {
             Free. Really.
           </h2>
           <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-            DraftStreamer runs entirely on OpenRouter's free{" "}
-            <code className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-[13px] text-primary">
-              deepseek-v4-flash:free
-            </code>{" "}
-            endpoint. No card, no credits, no tier gates.
+            SeedText runs entirely on its own free drafting engine. No card,
+            no credits, no tier gates.
           </p>
           <div className="mt-6 flex items-baseline justify-center gap-2">
             <span className="text-5xl font-extrabold tracking-tight text-foreground">$0</span>
             <span className="text-muted-foreground">/ month, unlimited drafts*</span>
           </div>
           <p className="mt-2 text-xs text-muted-foreground/70">
-            *Within OpenRouter's free-tier rate limits.
+            *Within SeedText's free-tier fair-use limits.
           </p>
           <Button asChild size="lg" className="mt-7 h-11 rounded-xl px-8 text-[15px] shadow-lg shadow-primary/25">
             <Link to="/dashboard">
@@ -337,10 +334,10 @@ export default function Landing() {
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row">
           <div className="flex items-center gap-2">
             <img src={logo} alt="" className="size-6 rounded-md" />
-            <span className="font-semibold text-foreground">DraftStreamer</span>
+            <span className="font-semibold text-foreground">SeedText</span>
             <span>— niche drafts, streamed live.</span>
           </div>
-          <span>Built with DeepSeek via OpenRouter · {new Date().getFullYear()}</span>
+          <span>Built with SeedText AI · {new Date().getFullYear()}</span>
         </div>
       </footer>
     </div>

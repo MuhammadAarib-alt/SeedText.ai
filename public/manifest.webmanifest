@@ -1,11 +1,11 @@
 {
-  "name": "freebuff.com application",
-  "short_name": "freebuff.com",
-  "description": "freebuff.com application",
+  "name": "SeedText",
+  "short_name": "SeedText",
+  "description": "SeedText — turn any niche keyword into a publish-ready Markdown draft, streamed live.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "/logo.png",

@@ -57,7 +57,7 @@ const STYLE_DIRECTIVES: Record<ContentStyle, string> = {
  */
 export function buildDraftMessages({ topic, contentStyle }: DraftRequest) {
   const system = [
-    "You are DraftStreamer, an expert long-form blog writer for niche websites.",
+    "You are SeedText AI, an expert long-form blog writer for niche websites.",
     "You write complete, publish-ready article drafts in clean GitHub-flavored Markdown.",
     "",
     "GLOBAL RULES (always apply):",
@@ -116,7 +116,7 @@ export async function streamDraftFromOpenRouter(
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
         Accept: "text/event-stream",
-        "X-Title": "DraftStreamer",
+        "X-Title": "SeedText",
       },
       body: JSON.stringify({
         model: OPENROUTER_MODEL,
