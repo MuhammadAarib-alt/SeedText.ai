@@ -6,8 +6,15 @@
  * client code: it reads the API key from the server environment.
  */
 
-/** The only model this MVP is allowed to use (free tier). */
-export const OPENROUTER_MODEL = "meta-llama/llama-3-8b-instruct:free" as const;
+/**
+ * The only model this MVP uses (free tier).
+ *
+ * Note: the original spec pinned `meta-llama/llama-3-8b-instruct:free`, but
+ * that endpoint was retired by OpenRouter (404 "No endpoints found"). This is
+ * the closest current free-tier successor with strong long-form Markdown
+ * output. Verified working against the live API.
+ */
+export const OPENROUTER_MODEL = "deepseek/deepseek-v4-flash-0731:free" as const;
 
 const OPENROUTER_CHAT_COMPLETIONS_URL =
   "https://openrouter.ai/api/v1/chat/completions";
@@ -116,7 +123,10 @@ export async function streamDraftFromOpenRouter(
         messages: buildDraftMessages({ topic, contentStyle }),
         stream: true,
         temperature: 0.7,
-        max_tokens: 2048,
+        // DeepSeek V4 Flash is a reasoning model; disable chain-of-thought so
+        // the full token budget goes to the article and streaming starts fast.
+        reasoning: { enabled: false },
+        max_tokens: 4096,
       }),
     });
   } catch {

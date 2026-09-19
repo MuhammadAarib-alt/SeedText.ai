@@ -46,7 +46,7 @@ const FEATURES = [
   {
     icon: Gauge,
     title: "Zero-cost pipeline",
-    body: "Runs on OpenRouter's free Llama 3 8B endpoint. No credits, no subscriptions, no per-word bills — ever.",
+    body: "Runs on OpenRouter's free DeepSeek V4 Flash endpoint. No credits, no subscriptions, no per-word bills — ever.",
   },
   {
     icon: ShieldCheck,
@@ -118,7 +118,7 @@ export default function Landing() {
         >
           <span className="glass-chip text-xs font-medium text-foreground/80">
             <Sparkles className="size-3.5 text-primary" />
-            Powered by Llama 3 · free forever
+            Powered by DeepSeek · free forever
           </span>
         </motion.div>
 
@@ -312,7 +312,7 @@ export default function Landing() {
           <p className="mx-auto mt-3 max-w-md text-muted-foreground">
             DraftStreamer runs entirely on OpenRouter's free{" "}
             <code className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-[13px] text-primary">
-              llama-3-8b-instruct:free
+              deepseek-v4-flash:free
             </code>{" "}
             endpoint. No card, no credits, no tier gates.
           </p>
@@ -340,7 +340,7 @@ export default function Landing() {
             <span className="font-semibold text-foreground">DraftStreamer</span>
             <span>— niche drafts, streamed live.</span>
           </div>
-          <span>Built with Llama 3 via OpenRouter · {new Date().getFullYear()}</span>
+          <span>Built with DeepSeek via OpenRouter · {new Date().getFullYear()}</span>
         </div>
       </footer>
     </div>

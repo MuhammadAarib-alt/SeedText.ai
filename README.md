@@ -32,7 +32,9 @@ Currently, these variables include auth-specific keys: JWKS, JWT_PRIVATE_KEY, an
 ### OpenRouter API key (required for draft generation)
 
 Draft generation calls `https://openrouter.ai/api/v1/chat/completions` with the
-`meta-llama/llama-3-8b-instruct:free` model. The backend reads the key from
+`deepseek/deepseek-v4-flash-0731:free` model (the original
+`meta-llama/llama-3-8b-instruct:free` endpoint has been retired by OpenRouter).
+The backend reads the key from
 `process.env.OPENROUTER_API_KEY` — it is never hardcoded and never sent to the
 browser.
 

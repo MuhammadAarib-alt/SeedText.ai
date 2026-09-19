@@ -200,7 +200,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2">
             <span className="glass-chip hidden text-[11px] font-medium text-muted-foreground sm:inline-flex">
               <Sparkles className="size-3 text-primary" />
-              llama-3-8b-instruct:free
+              deepseek-v4-flash:free
             </span>
             <Button asChild variant="outline" className="rounded-xl border-white/60 bg-white/50">
               <a href="/">
