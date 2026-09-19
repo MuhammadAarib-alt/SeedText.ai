@@ -119,41 +119,59 @@ export const generateDraft = httpAction(async (ctx, request) => {
     }
 
     // ── 4. Pipe SSE chunks to the client as plain text deltas ─────────
-    const reader = upstream.body
-      .pipeThrough(new TextDecoderStream())
-      .getReader();
+    //
+    // NOTE: deliberately avoids `upstream.body.pipeThrough(new
+    // TextDecoderStream()).getReader()` — that chaining pattern never yields
+    // data under Convex's V8 runtime (verified empirically), producing an
+    // empty 200 response. An explicit reader + TextDecoder + start() pump
+    // works correctly.
+    const upstreamReader = upstream.body.getReader();
+    const decoder = new TextDecoder();
+    // Convex's V8 runtime requires ReadableStream chunks to be Uint8Array —
+    // enqueueing strings fails with "serde_v8 error: expected buffer, got
+    // string" and silently kills the stream.
+    const encoder = new TextEncoder();
+    let sseCarry = ""; // partial SSE line carried across network chunks
 
-    const textStream = new ReadableStream<string>({
-      async pull(controller) {
+    const textStream = new ReadableStream<Uint8Array>({
+      async start(controller) {
         try {
-          const { done, value } = await reader.read();
-          if (done) {
-            controller.close();
-            return;
-          }
-          // OpenRouter uses the OpenAI SSE protocol: lines like
-          // `data: {"choices":[{"delta":{"content":"..."}}]}`
-          for (const rawLine of value.split("\n")) {
-            const line = rawLine.trim();
-            if (!line.startsWith("data:")) continue;
-            const data = line.slice(5).trim();
-            if (!data || data === "[DONE]") continue;
-            try {
-              const parsedData = JSON.parse(data) as {
-                choices?: Array<{ delta?: { content?: string } }>;
-              };
-              const delta = parsedData.choices?.[0]?.delta?.content;
-              if (delta) controller.enqueue(delta);
-            } catch {
-              // Ignore keep-alive comments / partial frames.
+          for (;;) {
+            const { done, value } = await upstreamReader.read();
+            if (done) break;
+
+            // OpenRouter uses the OpenAI SSE protocol: lines like
+            // `data: {"choices":[{"delta":{"content":"..."}}]}`.
+            // Frames can split a line in half, so keep a carry buffer.
+            const text = sseCarry + decoder.decode(value, { stream: true });
+            const lines = text.split("\n");
+            sseCarry = lines.pop() ?? "";
+
+            for (const rawLine of lines) {
+              const line = rawLine.trim();
+              if (!line.startsWith("data:")) continue;
+              const data = line.slice(5).trim();
+              if (!data || data === "[DONE]") continue;
+              try {
+                const parsedData = JSON.parse(data) as {
+                  choices?: Array<{ delta?: { content?: string } }>;
+                };
+                const delta = parsedData.choices?.[0]?.delta?.content;
+                if (delta) controller.enqueue(encoder.encode(delta));
+              } catch {
+                // Ignore keep-alive comments / malformed frames.
+              }
             }
           }
         } catch {
+          // Upstream aborted or errored mid-stream: end the client stream.
+        } finally {
+          void upstreamReader.cancel().catch(() => {});
           controller.close();
         }
       },
       cancel() {
-        void reader.cancel();
+        void upstreamReader.cancel().catch(() => {});
       },
     });
 
