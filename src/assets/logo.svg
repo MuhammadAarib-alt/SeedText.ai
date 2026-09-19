@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
+    <!-- Soft ambient background that fades to fully transparent at the edges,
+         so the logo blends into whatever glass surface sits behind it. -->
+    <radialGradient id="bgFade" cx="50%" cy="42%" r="74%">
+      <stop offset="0%" stop-color="#dbeafe" stop-opacity="0.95"/>
+      <stop offset="42%" stop-color="#dbeafe" stop-opacity="0.75"/>
+      <stop offset="72%" stop-color="#dbeafe" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#dbeafe" stop-opacity="0"/>
+    </radialGradient>
     <linearGradient id="ribbon" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#dbeafe"/>
       <stop offset="45%" stop-color="#bfdbfe"/>
@@ -16,6 +24,9 @@
       <stop offset="100%" stop-color="#d6e9fc"/>
     </linearGradient>
   </defs>
+
+  <!-- Feathered background glow (no hard edges) -->
+  <rect width="512" height="512" fill="url(#bgFade)"/>
 
   <!-- S-ribbon (behind the wand) -->
   <g fill="none" stroke="url(#ribbon)" stroke-linecap="round">
