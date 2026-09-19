@@ -13,7 +13,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Link } from "react-router";
-import logo from "@/assets/logo.svg";
+import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 
 const fadeUp = {
@@ -84,7 +84,7 @@ export default function Landing() {
       <header className="sticky top-0 z-40 px-4 pt-4">
         <div className="glass-panel mx-auto flex h-14 max-w-5xl items-center justify-between rounded-2xl px-4">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src={logo} alt="" className="size-8 rounded-lg" />
+            <img src={logo} alt="" className="size-8" />
             <span className="text-[15px] font-bold tracking-tight text-foreground">
             SeedText
           </span>
@@ -333,7 +333,7 @@ export default function Landing() {
       <footer className="relative border-t border-white/50 py-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="" className="size-6 rounded-md" />
+            <img src={logo} alt="" className="size-6" />
             <span className="font-semibold text-foreground">SeedText</span>
             <span>— niche drafts, streamed live.</span>
           </div>
