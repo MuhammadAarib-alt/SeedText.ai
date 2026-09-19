@@ -42,74 +42,83 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* CHANGE VALUES FOR THEME */
+/* CHANGE VALUES FOR THEME — light glassmorphism over a bright sky mesh */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --radius: 1rem;
+  --background: oklch(0.98 0.01 240);
+  --foreground: oklch(0.24 0.03 255);
+  --card: oklch(1 0 0 / 62%);
+  --card-foreground: oklch(0.24 0.03 255);
+  --popover: oklch(1 0 0 / 88%);
+  --popover-foreground: oklch(0.24 0.03 255);
+  --primary: oklch(0.55 0.21 262);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --secondary: oklch(0.95 0.02 235);
+  --secondary-foreground: oklch(0.3 0.06 258);
+  --muted: oklch(0.95 0.015 240);
+  --muted-foreground: oklch(0.5 0.03 255);
+  --accent: oklch(0.93 0.03 230);
+  --accent-foreground: oklch(0.28 0.07 258);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(1 0 0 / 55%);
+  --input: oklch(1 0 0 / 60%);
+  --ring: oklch(0.62 0.17 260);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-3: oklch(0.55 0.21 262);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(1 0 0 / 70%);
+  --sidebar-foreground: oklch(0.24 0.03 255);
+  --sidebar-primary: oklch(0.55 0.21 262);
+  --sidebar-primary-foreground: oklch(0.99 0.005 250);
+  --sidebar-accent: oklch(0.93 0.03 230);
+  --sidebar-accent-foreground: oklch(0.28 0.07 258);
+  --sidebar-border: oklch(1 0 0 / 55%);
+  --sidebar-ring: oklch(0.62 0.17 260);
+
+  /* Glass primitives */
+  --glass-bg: oklch(1 0 0 / 55%);
+  --glass-bg-strong: oklch(1 0 0 / 74%);
+  --glass-border: oklch(1 0 0 / 65%);
+  --glass-edge-light: oklch(1 0 0 / 90%);
+  --glass-blur: 18px;
 }
 
+/* Light glassmorphism only — dark stays near-identical to the light theme
+   so an accidental dark-mode class never surfaces dark glass surfaces. */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.97 0.012 240);
+  --foreground: oklch(0.25 0.03 255);
+  --card: oklch(1 0 0 / 62%);
+  --card-foreground: oklch(0.24 0.03 255);
+  --popover: oklch(1 0 0 / 88%);
+  --popover-foreground: oklch(0.24 0.03 255);
+  --primary: oklch(0.55 0.21 262);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --secondary: oklch(0.95 0.02 235);
+  --secondary-foreground: oklch(0.3 0.06 258);
+  --muted: oklch(0.94 0.018 240);
+  --muted-foreground: oklch(0.5 0.03 255);
+  --accent: oklch(0.93 0.03 230);
+  --accent-foreground: oklch(0.28 0.07 258);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(1 0 0 / 55%);
+  --input: oklch(1 0 0 / 60%);
+  --ring: oklch(0.62 0.17 260);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.55 0.21 262);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(1 0 0 / 70%);
+  --sidebar-foreground: oklch(0.24 0.03 255);
+  --sidebar-primary: oklch(0.55 0.21 262);
+  --sidebar-primary-foreground: oklch(0.99 0.005 250);
+  --sidebar-accent: oklch(0.93 0.03 230);
+  --sidebar-accent-foreground: oklch(0.28 0.07 258);
+  --sidebar-border: oklch(1 0 0 / 55%);
+  --sidebar-ring: oklch(0.62 0.17 260);
 }
 
 @layer base {
@@ -118,9 +127,190 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
   }
   button:not([disabled]),
   [role="button"]:not([disabled]) {
     cursor: pointer;
+  }
+}
+
+@layer components {
+  /* Frosted sky-mesh backdrop behind every page. */
+  .glass-scene {
+    position: relative;
+    min-height: 100vh;
+    isolation: isolate;
+    background:
+      radial-gradient(52rem 36rem at 8% -10%, oklch(0.85 0.09 245 / 0.5), transparent 60%),
+      radial-gradient(46rem 32rem at 100% 0%, oklch(0.9 0.07 210 / 0.55), transparent 62%),
+      radial-gradient(40rem 30rem at 88% 110%, oklch(0.82 0.1 275 / 0.38), transparent 58%),
+      radial-gradient(34rem 26rem at 12% 108%, oklch(0.88 0.08 200 / 0.42), transparent 60%),
+      oklch(0.985 0.008 245);
+  }
+
+  /* Soft drifting light blobs that sit behind the glass panels. */
+  .glass-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(64px);
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Translucent frosted panel with a crisp top-edge highlight. */
+  .glass-panel {
+    position: relative;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: calc(var(--radius) + 0.25rem);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+    box-shadow:
+      0 1px 0 0 var(--glass-edge-light) inset,
+      0 -1px 0 0 oklch(0.6 0.04 255 / 8%) inset,
+      0 12px 40px -18px oklch(0.45 0.08 260 / 25%),
+      0 4px 14px -8px oklch(0.5 0.06 255 / 12%);
+  }
+
+  /* Denser variant for the streaming output surface. */
+  .glass-panel-strong {
+    background: var(--glass-bg-strong);
+  }
+
+  /* Subtle inner sheen line along the top edge of a panel. */
+  .glass-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 40%;
+    border-radius: inherit;
+    background: linear-gradient(
+      180deg,
+      oklch(1 0 0 / 40%),
+      transparent
+    );
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .glass-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 9999px;
+    border: 1px solid oklch(1 0 0 / 70%);
+    background: oklch(1 0 0 / 55%);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 0 0 oklch(1 0 0 / 90%) inset;
+  }
+
+  /* Markdown output typography for streamed drafts. */
+  .glass-prose {
+    font-size: 0.925rem;
+    line-height: 1.75;
+    color: oklch(0.3 0.03 255);
+    overflow-wrap: break-word;
+  }
+  .glass-prose > :first-child { margin-top: 0; }
+  .glass-prose > :last-child { margin-bottom: 0; }
+  .glass-prose h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: oklch(0.22 0.05 258);
+    margin: 1.4rem 0 0.8rem;
+    line-height: 1.25;
+  }
+  .glass-prose h2 {
+    font-size: 1.22rem;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    color: oklch(0.26 0.07 260);
+    margin: 1.6rem 0 0.6rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid oklch(0.55 0.09 262 / 18%);
+  }
+  .glass-prose h3 {
+    font-size: 1.05rem;
+    font-weight: 620;
+    color: oklch(0.3 0.08 262);
+    margin: 1.15rem 0 0.45rem;
+  }
+  .glass-prose h4 {
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin: 1rem 0 0.4rem;
+  }
+  .glass-prose p { margin: 0.65rem 0; }
+  .glass-prose ul,
+  .glass-prose ol {
+    margin: 0.65rem 0;
+    padding-left: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .glass-prose ul { list-style: disc; }
+  .glass-prose ol { list-style: decimal; }
+  .glass-prose li::marker { color: oklch(0.6 0.15 262); }
+  .glass-prose strong { color: oklch(0.24 0.06 258); font-weight: 640; }
+  .glass-prose a { color: oklch(0.55 0.19 262); text-decoration: underline; }
+  .glass-prose blockquote {
+    margin: 0.8rem 0;
+    padding: 0.4rem 0 0.4rem 1rem;
+    border-left: 3px solid oklch(0.62 0.15 262 / 45%);
+    color: oklch(0.42 0.04 255);
+  }
+  .glass-prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.84em;
+    background: oklch(0.55 0.21 262 / 10%);
+    border: 1px solid oklch(0.55 0.21 262 / 14%);
+    border-radius: 0.35rem;
+    padding: 0.1rem 0.32rem;
+  }
+  .glass-prose pre {
+    margin: 0.8rem 0;
+    padding: 0.85rem 1rem;
+    background: oklch(0.98 0.01 250 / 85%);
+    border: 1px solid oklch(0.6 0.05 255 / 16%);
+    border-radius: 0.6rem;
+    overflow-x: auto;
+  }
+  .glass-prose pre code { background: transparent; border: none; padding: 0; }
+  .glass-prose table {
+    width: 100%;
+    margin: 0.9rem 0;
+    border-collapse: collapse;
+    font-size: 0.86em;
+  }
+  .glass-prose th,
+  .glass-prose td {
+    border: 1px solid oklch(0.6 0.06 255 / 18%);
+    padding: 0.42rem 0.6rem;
+    text-align: left;
+  }
+  .glass-prose th {
+    background: oklch(0.55 0.21 262 / 8%);
+    font-weight: 620;
+  }
+  .glass-prose hr {
+    margin: 1.4rem 0;
+    border: none;
+    border-top: 1px solid oklch(0.55 0.06 255 / 16%);
+  }
+
+  /* Caret shown at the end of text while the draft is still streaming. */
+  .stream-caret::after {
+    content: "▍";
+    color: oklch(0.55 0.21 262);
+    animation: caret-blink 1s steps(2, start) infinite;
+  }
+  @keyframes caret-blink {
+    to { visibility: hidden; }
   }
 }

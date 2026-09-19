@@ -29,6 +29,29 @@ The convex server has a separate set of environment variables that are accessibl
 
 Currently, these variables include auth-specific keys: JWKS, JWT_PRIVATE_KEY, and SITE_URL.
 
+### OpenRouter API key (required for draft generation)
+
+Draft generation calls `https://openrouter.ai/api/v1/chat/completions` with the
+`meta-llama/llama-3-8b-instruct:free` model. The backend reads the key from
+`process.env.OPENROUTER_API_KEY` — it is never hardcoded and never sent to the
+browser.
+
+1. Grab a free key at <https://openrouter.ai/keys>.
+2. Add it to the Convex deployment (or paste it into the project's Keys / API
+   keys UI):
+
+   ```bash
+   bun convex env set OPENROUTER_API_KEY sk-or-v1-...
+   ```
+
+3. For local tooling, copy `.env.example` to `.env.local` and fill it in.
+   `.env`, `.env.local`, and every other `.env.*` file are git-ignored
+   (see `.gitignore`) so real keys stay private; only `.env.example` is
+   committed, and it contains a placeholder — never a real key.
+
+Without the key set, the API returns HTTP 500 with a clear configuration
+error message instead of silently failing.
+
 
 # Using Authentication (Important!)
 
