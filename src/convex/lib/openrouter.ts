@@ -7,14 +7,19 @@
  */
 
 /**
- * The only model this MVP uses (free tier).
+ * Free-tier models, in priority order.
  *
- * Note: the original spec pinned `meta-llama/llama-3-8b-instruct:free`, but
- * that endpoint was retired by OpenRouter (404 "No endpoints found"). This is
- * the closest current free-tier successor with strong long-form Markdown
- * output. Verified working against the live API.
+ * OpenRouter retires and rate-limits free slugs frequently (the original spec's
+ * `meta-llama/llama-3-8b-instruct:free` and later
+ * `deepseek/deepseek-v4-flash-0731:free` were both retired), so requests
+ * automatically fall through this chain on model-level failures instead of
+ * hard-failing. Both candidates are non-reasoning writer models that produce
+ * formatting-heavy Markdown directly — verified against the live API.
  */
-export const OPENROUTER_MODEL = "deepseek/deepseek-v4-flash-0731:free" as const;
+export const OPENROUTER_MODELS = [
+  "nvidia/nemotron-3-super-120b-a12b:free", // primary: strongest long-form prose
+  "nvidia/nemotron-3.5-lightning:free", // fallback: same family, speed-optimized
+] as const;
 
 const OPENROUTER_CHAT_COMPLETIONS_URL =
   "https://openrouter.ai/api/v1/chat/completions";
@@ -108,35 +113,40 @@ export async function streamDraftFromOpenRouter(
     );
   }
 
-  let response: Response;
-  try {
-    response = await fetch(OPENROUTER_CHAT_COMPLETIONS_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        Accept: "text/event-stream",
-        "X-Title": "SeedText",
-      },
-      body: JSON.stringify({
-        model: OPENROUTER_MODEL,
-        messages: buildDraftMessages({ topic, contentStyle }),
-        stream: true,
-        temperature: 0.7,
-        // DeepSeek V4 Flash is a reasoning model; disable chain-of-thought so
-        // the full token budget goes to the article and streaming starts fast.
-        reasoning: { enabled: false },
-        max_tokens: 4096,
-      }),
-    });
-  } catch {
-    throw new OpenRouterError(
-      "Could not reach OpenRouter. Check network connectivity and try again.",
-      502,
-    );
-  }
+  let lastFailure: OpenRouterError | null = null;
 
-  if (!response.ok) {
+  for (const model of OPENROUTER_MODELS) {
+    let response: Response;
+    try {
+      response = await fetch(OPENROUTER_CHAT_COMPLETIONS_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          Accept: "text/event-stream",
+          "X-Title": "SeedText",
+        },
+        body: JSON.stringify({
+          model,
+          messages: buildDraftMessages({ topic, contentStyle }),
+          stream: true,
+          temperature: 0.7,
+          // Belt-and-braces: keeps any reasoning-capable model from spending
+          // the token budget on chain-of-thought instead of the article.
+          reasoning: { enabled: false },
+          max_tokens: 4096,
+        }),
+      });
+    } catch {
+      lastFailure = new OpenRouterError(
+        "Could not reach OpenRouter. Check network connectivity and try again.",
+        502,
+      );
+      continue;
+    }
+
+    if (response.ok) return response;
+
     const detail = await response.text().catch(() => "");
     let message = `OpenRouter request failed (${response.status}).`;
     try {
@@ -149,8 +159,24 @@ export async function streamDraftFromOpenRouter(
       message =
         "OpenRouter free-tier rate limit hit. Wait a minute and generate again.";
     }
-    throw new OpenRouterError(message, response.status);
+    lastFailure = new OpenRouterError(message, response.status);
+
+    // Fall through to the next candidate on model-level failures (slug
+    // retired => 404, upstream/provider limit => 429, provider trouble => 5xx).
+    // Auth (401/403) and bad-request (400) errors fail fast — the next model
+    // would hit the same problem.
+    const modelLevelFailure =
+      response.status === 404 ||
+      response.status === 429 ||
+      response.status >= 500;
+    if (!modelLevelFailure) throw lastFailure;
   }
 
-  return response;
+  throw (
+    lastFailure ??
+    new OpenRouterError(
+      "No free drafting model is currently available. Please try again later.",
+      502,
+    )
+  );
 }

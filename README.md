@@ -31,9 +31,13 @@ Currently, these variables include auth-specific keys: JWKS, JWT_PRIVATE_KEY, an
 
 ### OpenRouter API key (required for draft generation)
 
-Draft generation calls `https://openrouter.ai/api/v1/chat/completions` with the
-`deepseek/deepseek-v4-flash-0731:free` model (the original
-`meta-llama/llama-3-8b-instruct:free` endpoint has been retired by OpenRouter).
+Draft generation calls `https://openrouter.ai/api/v1/chat/completions` against
+a fallback chain of free models (currently
+`nvidia/nemotron-3-super-120b-a12b:free` with
+`nvidia/nemotron-3.5-lightning:free` as backup). OpenRouter retires free slugs
+frequently — the original spec's `meta-llama/llama-3-8b-instruct:free` and a
+later DeepSeek pick both got retired — so the backend automatically falls
+through the chain on model-level failures (404/429/5xx) instead of erroring.
 The backend reads the key from
 `process.env.OPENROUTER_API_KEY` — it is never hardcoded and never sent to the
 browser.
