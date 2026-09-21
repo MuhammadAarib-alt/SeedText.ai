@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /auth
+
+# AI crawlers — explicitly welcomed for GEO (answer-engine visibility)
+User-agent: GPTBot
+Allow: /
+Disallow: /dashboard
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /dashboard
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /dashboard
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /dashboard
+
+User-agent: CCBot
+Allow: /
+Disallow: /dashboard
+
+Sitemap: https://seedtext.app/sitemap.xml

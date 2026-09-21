@@ -3,16 +3,145 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/logo.png" />
-  <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="SeedText — turn any niche keyword into a publish-ready Markdown draft, streamed live." />
-  <title>SeedText — AI Article Draft Studio</title>
-  <script type="module" crossorigin src="/assets/index-CmchtOa6.js"></script>
+
+  <!-- ── Primary SEO ─────────────────────────────────────────── -->
+  <title>SeedText — Free AI Article Draft Generator for Niche Content</title>
+  <meta name="description" content="SeedText turns any niche keyword into a structured, publish-ready Markdown article draft — streamed live in seconds. Informational deep-dives, case studies, and step-by-step guides. Free forever." />
+  <meta name="keywords" content="free ai article generator, ai article writer, niche article drafts, markdown blog generator, ai blog draft tool, keyword to article, ai content generator, seo article writer, blog draft generator free" />
+  <meta name="author" content="SeedText" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="canonical" href="https://seedtext.app/" />
+
+  <!-- ── Open Graph (social + AI crawlers) ───────────────────── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SeedText" />
+  <meta property="og:title" content="SeedText — Free AI Article Draft Generator" />
+  <meta property="og:description" content="Type a keyword. Watch the draft write itself. Publish-ready Markdown articles streamed live — free forever." />
+  <meta property="og:url" content="https://seedtext.app/" />
+  <meta property="og:image" content="https://seedtext.app/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="SeedText — type a keyword, watch the article draft write itself" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- ── Twitter / X card ────────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SeedText — Free AI Article Draft Generator" />
+  <meta name="twitter:description" content="Type a keyword. Watch the draft write itself. Publish-ready Markdown articles streamed live — free forever." />
+  <meta name="twitter:image" content="https://seedtext.app/og-image.png" />
+  <meta name="twitter:image:alt" content="SeedText — AI article draft studio" />
+
+  <!-- ── Icons & app ─────────────────────────────────────────── -->
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="apple-touch-icon" href="/logo.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <!-- ── Structured data: the app itself ─────────────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "SeedText",
+    "url": "https://seedtext.app/",
+    "applicationCategory": "BusinessApplication",
+    "applicationSubCategory": "Content Generation Tool",
+    "operatingSystem": "Web",
+    "inLanguage": "en",
+    "isAccessibleForFree": true,
+    "browserRequirements": "Requires JavaScript",
+    "description": "Free AI article draft generator that turns any niche keyword into a structured, publish-ready Markdown article, streamed live to your workspace.",
+    "featureList": [
+      "Live-streamed Markdown article drafts",
+      "Informational, Case Study, and Step-by-Step article frameworks",
+      "Structured H2/H3 headings, bullet points, and comparison tables",
+      "Seed Vault article history for signed-in users",
+      "One-click copy to clipboard",
+      "Free forever — no credits, no subscriptions"
+    ],
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <!-- ── Structured data: the org (GEO citation signal) ──────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "SeedText",
+    "url": "https://seedtext.app/",
+    "logo": "https://seedtext.app/logo.png",
+    "description": "SeedText is the AI article draft studio that turns niche keywords into publish-ready Markdown drafts, streamed live and free."
+  }
+  </script>
+
+  <!-- ── Structured data: FAQ (GEO answer-engine extraction) ─── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is SeedText really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. SeedText runs entirely on its own free drafting engine — no card, no credits, no subscription. Unlimited drafts within fair-use limits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What do I need to generate an article draft?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Just a niche target keyword and a content style. The draft streams into your workspace live, usually finishing in under a minute."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What article formats can SeedText write?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Three frameworks: Informational deep-dives, results-first Case Studies, and numbered Step-by-Step Guides. Every draft ships as structured Markdown with H2/H3 sections, bullet points, and a comparison table."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I publish the drafts as-is?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Drafts are publish-ready in structure — hook, sections, bullets, table, conclusion. Most editors add their own voice, examples, and sources before hitting publish."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need an account to use SeedText?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can start immediately as a guest. Signing in with email is free and keeps every finished draft in your Seed Vault history so you can reopen, copy, or load them any time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Who owns the content SeedText generates?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You do. Every draft is yours to edit, publish, and monetize."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="module" crossorigin src="/assets/index-JGJMp6kX.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/react-vendor-twUPT20K.js">
   <link rel="modulepreload" crossorigin href="/assets/framer-motion-CRk4231t.js">
-  <link rel="modulepreload" crossorigin href="/assets/radix-ui-BewjBCq6.js">
-  <link rel="stylesheet" crossorigin href="/assets/index-DkhwzIOr.css">
+  <link rel="modulepreload" crossorigin href="/assets/radix-ui-CyhOnVed.js">
+  <link rel="stylesheet" crossorigin href="/assets/index-DJEpSfil.css">
 </head>
 
 
