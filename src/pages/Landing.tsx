@@ -15,6 +15,7 @@ import {
 import { Link } from "react-router";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
+import { useSeo } from "@/hooks/use-seo";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -55,6 +56,33 @@ const FEATURES = [
   },
 ];
 
+const FAQS = [
+  {
+    q: "Is SeedText really free?",
+    a: "Yes. SeedText runs entirely on its own free drafting engine — no card, no credits, no subscription. Unlimited drafts within fair-use limits.",
+  },
+  {
+    q: "What do I need to generate an article draft?",
+    a: "Just a niche target keyword and a content style. The draft streams into your workspace live, usually finishing in under a minute.",
+  },
+  {
+    q: "What article formats can SeedText write?",
+    a: "Three frameworks: Informational deep-dives, results-first Case Studies, and numbered Step-by-Step Guides. Every draft ships as structured Markdown with H2/H3 sections, bullet points, and a comparison table.",
+  },
+  {
+    q: "Can I publish the drafts as-is?",
+    a: "Drafts are publish-ready in structure — hook, sections, bullets, table, conclusion. Most editors add their own voice, examples, and sources before hitting publish.",
+  },
+  {
+    q: "Do I need an account to use SeedText?",
+    a: "You can start immediately as a guest. Signing in with email is free and keeps every finished draft in your Seed Vault history so you can reopen, copy, or load them any time.",
+  },
+  {
+    q: "Who owns the content SeedText generates?",
+    a: "You do. Every draft is yours to edit, publish, and monetize.",
+  },
+];
+
 const STEPS = [
   {
     title: "Describe your niche",
@@ -71,6 +99,8 @@ const STEPS = [
 ];
 
 export default function Landing() {
+  useSeo();
+
   return (
     <div className="glass-scene overflow-x-clip">
       {/* Ambient orbs behind the glass */}
@@ -98,6 +128,9 @@ export default function Landing() {
             </a>
             <a href="#pricing" className="rounded-lg px-3 py-1.5 transition-colors hover:bg-white/50 hover:text-foreground">
               Pricing
+            </a>
+            <a href="#faq" className="rounded-lg px-3 py-1.5 transition-colors hover:bg-white/50 hover:text-foreground">
+              FAQ
             </a>
           </nav>
           <Button asChild className="rounded-xl">
@@ -327,6 +360,35 @@ export default function Landing() {
             </Link>
           </Button>
         </motion.div>
+      </section>
+
+      {/* ── FAQ (mirrors the FAQPage structured data in the head) ── */}
+      <section id="faq" className="relative mx-auto max-w-5xl scroll-mt-24 px-4 py-16">
+        <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="text-center">
+          <span className="glass-chip text-xs font-medium text-foreground/80">
+            <Sparkles className="size-3.5 text-primary" />
+            FAQ
+          </span>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Questions, answered
+          </h2>
+        </motion.div>
+
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
+          {FAQS.map((faq, i) => (
+            <motion.div
+              key={faq.q}
+              {...fadeUp}
+              transition={{ duration: 0.45, delay: (i % 2) * 0.08 }}
+              className="glass-panel rounded-2xl p-5"
+            >
+              <h3 className="font-semibold text-foreground">{faq.q}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {faq.a}
+              </p>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────── */}

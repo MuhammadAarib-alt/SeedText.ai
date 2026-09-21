@@ -1,0 +1,32 @@
+# SeedText
+
+> SeedText is a free AI article draft studio: type a niche keyword, pick a
+> content style (Informational deep-dive, Case Study, or Step-by-Step Guide),
+> and a structured, publish-ready Markdown article streams into your workspace
+> live. Free forever — no credits, no subscription.
+
+SeedText is a web application at https://seedtext.app/
+
+## Key facts
+
+- Price: $0. Unlimited drafts within fair-use limits; no card or subscription required.
+- Input: a niche target keyword and a content style.
+- Output: structured Markdown — H1 hook, H2/H3 sections, bullet points, comparison table, conclusion.
+- Streaming: drafts generate live, token by token, usually finishing in under a minute.
+- Article frameworks: Informational deep-dives, results-first Case Studies, numbered Step-by-Step Guides.
+- History: signed-in users keep every finished draft in the "Seed Vault" for later reading, copying, or reloading.
+- Ownership: users own the drafts they generate and may edit, publish, and monetize them.
+- Guest access: no account required to start; guests simply don't get draft history.
+
+## Who it's for
+
+Niche site publishers, affiliate bloggers, indie founders, and content teams
+who need fast first drafts for long-tail keywords without paying per-word AI
+pricing.
+
+## How it works
+
+1. Enter a niche keyword (for example "cold plunge recovery").
+2. Choose a content style: Informational, Case Study, or Step-by-Step Guide.
+3. Click Generate — the Markdown draft streams into the workspace live.
+4. Copy the Markdown into any CMS, or sign in to keep it in your Seed Vault.

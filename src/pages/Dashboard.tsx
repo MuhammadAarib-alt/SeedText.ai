@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
+import { useSeo } from "@/hooks/use-seo";
 import {
   AlertCircle,
   Archive,
@@ -72,6 +73,7 @@ function formatVaultDate(ms: number) {
 }
 
 export default function Dashboard() {
+  useSeo();
   const { user } = useAuth();
   const authToken = useAuthToken();
 

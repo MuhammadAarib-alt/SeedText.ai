@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function NotFound() {
+  useSeo();
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
