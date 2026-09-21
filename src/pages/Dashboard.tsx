@@ -1,4 +1,7 @@
 import { useAuthToken } from "@convex-dev/auth/react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,17 +13,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import {
   AlertCircle,
+  Archive,
+  ArrowLeft,
   Check,
   CircleStop,
   Copy,
   Eraser,
+  FileInput,
   FileText,
   Loader2,
   Sparkles,
+  Trash2,
   Wand2,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -49,6 +63,14 @@ const EXAMPLE_KEYWORDS = [
   "B2B churn cohorts",
 ];
 
+function formatVaultDate(ms: number) {
+  return new Date(ms).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default function Dashboard() {
   const { user } = useAuth();
   const authToken = useAuthToken();
@@ -59,6 +81,21 @@ export default function Dashboard() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // ── Seed Vault (article history) ─────────────────────────────
+  // Guests (anonymous accounts) get no history — only real sign-ins do.
+  const canUseVault = !!user && user.isAnonymous !== true;
+  const saveArticle = useMutation(api.articles.save);
+  const removeArticle = useMutation(api.articles.remove);
+  const vault = useQuery(api.articles.list, canUseVault ? {} : "skip");
+  const [vaultOpen, setVaultOpen] = useState(false);
+  const [openArticleId, setOpenArticleId] = useState<Id<"articles"> | null>(
+    null,
+  );
+  const openArticle = useQuery(
+    api.articles.get,
+    openArticleId ? { id: openArticleId } : "skip",
+  );
 
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -130,15 +167,32 @@ export default function Dashboard() {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
+      let fullText = "";
 
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
-        if (chunk) setDraft((prev) => prev + chunk);
+        if (chunk) {
+          fullText += chunk;
+          setDraft((prev) => prev + chunk);
+        }
       }
 
       setStatus("done");
+
+      // Signed-in users: archive the finished draft automatically.
+      // Guests get no history, so nothing is stored for them.
+      if (canUseVault && fullText.trim()) {
+        void saveArticle({
+          topic: trimmedTopic,
+          contentStyle,
+          content: fullText,
+          wordCount: fullText.trim().split(/\s+/).length,
+        })
+          .then(() => toast.success("Draft saved to your vault"))
+          .catch(() => toast.error("Couldn't save this draft to the vault"));
+      }
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         setStatus("idle");
@@ -359,6 +413,17 @@ export default function Dashboard() {
                     Streaming…
                   </span>
                 )}
+                {canUseVault && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-lg border-white/60 bg-white/55"
+                    onClick={() => setVaultOpen(true)}
+                  >
+                    <Archive className="size-3.5" />
+                    Vault
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   size="sm"
@@ -439,6 +504,177 @@ export default function Dashboard() {
           </section>
         </div>
       </main>
+
+      {/* ── Seed Vault: article history (signed-in users only) ── */}
+      <Sheet open={vaultOpen} onOpenChange={setVaultOpen}>
+        <SheetContent
+          side="right"
+          className="glass-panel flex w-full flex-col gap-0 rounded-none border-l border-white/60 p-0 sm:max-w-md"
+        >
+          {openArticleId === null ? (
+            <>
+              <SheetHeader className="border-b border-white/50 px-5 py-4">
+                <SheetTitle className="flex items-center gap-2 text-base">
+                  <Archive className="size-4 text-primary" />
+                  Seed Vault
+                </SheetTitle>
+                <SheetDescription>
+                  Every draft you finish is archived here automatically.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="flex-1 overflow-y-auto px-4 py-4">
+                {vault === undefined ? (
+                  <div className="flex h-32 items-center justify-center text-sm text-muted-foreground">
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    Opening the vault…
+                  </div>
+                ) : vault.length === 0 ? (
+                  <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
+                    <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <Archive className="size-5" />
+                    </div>
+                    <p className="text-sm font-medium text-foreground">
+                      Nothing archived yet
+                    </p>
+                    <p className="max-w-[16rem] text-xs text-muted-foreground">
+                      Finish a draft and it lands in your vault — ready to
+                      reopen any time.
+                    </p>
+                  </div>
+                ) : (
+                  <ul className="space-y-2">
+                    {vault.map((entry) => (
+                      <li
+                        key={entry._id}
+                        className="glass-panel rounded-xl p-3 transition-colors hover:bg-white/70"
+                      >
+                        <button
+                          type="button"
+                          className="w-full text-left"
+                          onClick={() => setOpenArticleId(entry._id)}
+                        >
+                          <p className="truncate text-sm font-medium text-foreground">
+                            {entry.topic}
+                          </p>
+                          <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                            {entry.preview}…
+                          </p>
+                          <p className="mt-2 text-[11px] text-muted-foreground">
+                            {entry.contentStyle} · {entry.wordCount} words ·{" "}
+                            {formatVaultDate(entry._creationTime)}
+                          </p>
+                        </button>
+                        <div className="mt-1 flex justify-end">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 rounded-lg px-2 text-xs text-muted-foreground hover:text-destructive"
+                            onClick={() =>
+                              void removeArticle({ id: entry._id })
+                                .then(() =>
+                                  toast.success("Draft removed from vault"),
+                                )
+                                .catch(() =>
+                                  toast.error("Couldn't remove that draft"),
+                                )
+                            }
+                          >
+                            <Trash2 className="size-3.5" />
+                            Delete
+                          </Button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <SheetHeader className="border-b border-white/50 px-5 py-4">
+                <div className="flex items-center justify-between gap-2 pr-8">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="-ml-2 rounded-lg"
+                    onClick={() => setOpenArticleId(null)}
+                  >
+                    <ArrowLeft className="size-4" />
+                    Vault
+                  </Button>
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-lg border-white/60 bg-white/55"
+                      disabled={!openArticle}
+                      onClick={() => {
+                        if (!openArticle) return;
+                        setDraft(openArticle.content);
+                        setStatus("done");
+                        setTopic(openArticle.topic);
+                        setContentStyle(
+                          openArticle.contentStyle as ContentStyle,
+                        );
+                        setVaultOpen(false);
+                        toast.success("Draft loaded into the workspace");
+                      }}
+                    >
+                      <FileInput className="size-3.5" />
+                      Load
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="rounded-lg shadow-md shadow-primary/25"
+                      disabled={!openArticle}
+                      onClick={() => {
+                        if (!openArticle) return;
+                        void navigator.clipboard
+                          .writeText(openArticle.content)
+                          .then(() =>
+                            toast.success("Draft copied to clipboard"),
+                          )
+                          .catch(() =>
+                            toast.error("Couldn't access the clipboard"),
+                          );
+                      }}
+                    >
+                      <Copy className="size-3.5" />
+                      Copy
+                    </Button>
+                  </div>
+                </div>
+                <SheetTitle className="mt-1 text-base">
+                  {openArticle?.topic ?? "…"}
+                </SheetTitle>
+                <SheetDescription>
+                  {openArticle
+                    ? `${openArticle.contentStyle} · ${openArticle.wordCount} words · ${formatVaultDate(openArticle._creationTime)}`
+                    : "Loading draft…"}
+                </SheetDescription>
+              </SheetHeader>
+              <div className="flex-1 overflow-y-auto px-5 py-4">
+                {openArticle === undefined ? (
+                  <div className="flex h-32 items-center justify-center text-sm text-muted-foreground">
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    Loading…
+                  </div>
+                ) : openArticle === null ? (
+                  <p className="text-sm text-muted-foreground">
+                    This draft is no longer available.
+                  </p>
+                ) : (
+                  <article className="glass-prose max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {openArticle.content}
+                    </ReactMarkdown>
+                  </article>
+                )}
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

@@ -32,6 +32,15 @@ const schema = defineSchema(
       role: v.optional(roleValidator), // role of the user. do not remove
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
+    // Saved article drafts (history) — one row per generated article.
+    articles: defineTable({
+      userId: v.id("users"),
+      topic: v.string(), // the niche keyword used for generation
+      contentStyle: v.string(), // Informational | Case Study | Step-by-Step Guide
+      content: v.string(), // full markdown draft
+      wordCount: v.number(),
+    }).index("by_user", ["userId"]),
+
     // add other tables here
 
     // tableName: defineTable({
