@@ -41,6 +41,15 @@ const schema = defineSchema(
       wordCount: v.number(),
     }).index("by_user", ["userId"]),
 
+    // Daily fair-use counters — one row per identity per UTC day.
+    // Keyed by auth subject (stable per sign-in method) rather than the
+    // users-table id, so the HTTP action can use it without a join.
+    usage: defineTable({
+      subject: v.string(), // auth identity subject
+      day: v.string(), // "YYYY-MM-DD" in UTC
+      count: v.number(),
+    }).index("by_subject_day", ["subject", "day"]),
+
     // add other tables here
 
     // tableName: defineTable({

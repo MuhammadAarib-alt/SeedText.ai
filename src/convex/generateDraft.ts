@@ -8,6 +8,7 @@
  * The API key never leaves the server; the browser only ever sees article text.
  */
 import { httpAction } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { OpenRouterError, CONTENT_STYLES, streamDraftFromOpenRouter } from "./lib/openrouter";
 
 const CORS_HEADERS = {
@@ -89,6 +90,33 @@ export const generateDraft = httpAction(async (ctx, request) => {
       );
     }
 
+    // ── 2b. Daily fair-use limit ────────────────────────────────────────
+    // Consume a slot atomically before touching the upstream API. The
+    // subject is the identity's stable auth id, so guests and signed-in
+    // users are both counted.
+    const subject = identity.subject;
+    const allowance = await ctx.runMutation(internal.usage.consume, {
+      subject,
+    });
+    if (!allowance.ok) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "You've reached today's draft limit — 10 per day while SeedText is in early access. Your allowance resets at midnight UTC. Thanks for helping us keep drafting free for everyone!",
+          code: "daily_limit_reached",
+          remaining: 0,
+        }),
+        {
+          status: 429,
+          headers: {
+            ...CORS_HEADERS,
+            "Content-Type": "application/json",
+            "Retry-After": "3600",
+          },
+        },
+      );
+    }
+
     // ── 3. Start the OpenRouter stream (server-side key stays secret) ──
     let upstream: Response;
     try {
@@ -97,6 +125,10 @@ export const generateDraft = httpAction(async (ctx, request) => {
         contentStyle: contentStyle as (typeof CONTENT_STYLES)[number],
       });
     } catch (error) {
+      // The stream never opened — the consumed slot wasn't used, give it back.
+      void ctx
+        .runMutation(internal.usage.refund, { subject, withinMs: 10 * 60 * 1000 })
+        .catch(() => {});
       const message =
         error instanceof OpenRouterError
           ? error.message

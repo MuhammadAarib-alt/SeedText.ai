@@ -59,7 +59,11 @@ const FEATURES = [
 const FAQS = [
   {
     q: "Is SeedText really free?",
-    a: "Yes. SeedText runs entirely on its own free drafting engine — no card, no credits, no subscription. Unlimited drafts within fair-use limits.",
+    a: "Yes. SeedText runs entirely on its own free drafting engine — no card, no credits, no subscription. While we're in early access, each account can draft up to 10 articles a day; that cap disappears at full release.",
+  },
+  {
+    q: "Why is there a daily draft limit?",
+    a: "Early access lets us keep SeedText completely free while our drafting engine scales. The 10-draft daily allowance (resetting at midnight UTC) protects capacity for everyone, and it goes away at full launch.",
   },
   {
     q: "What do I need to generate an article draft?",
@@ -348,10 +352,10 @@ export default function Landing() {
           </p>
           <div className="mt-6 flex items-baseline justify-center gap-2">
             <span className="text-5xl font-extrabold tracking-tight text-foreground">$0</span>
-            <span className="text-muted-foreground">/ month, unlimited drafts*</span>
+            <span className="text-muted-foreground">/ month, 10 drafts a day*</span>
           </div>
           <p className="mt-2 text-xs text-muted-foreground/70">
-            *Within SeedText's free-tier fair-use limits.
+            *Early-access fair use — the daily cap lifts at full release.
           </p>
           <Button asChild size="lg" className="mt-7 h-11 rounded-xl px-8 text-[15px] shadow-lg shadow-primary/25">
             <Link to="/dashboard">

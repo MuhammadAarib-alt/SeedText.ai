@@ -33,6 +33,7 @@ import {
   Eraser,
   FileInput,
   FileText,
+  Gauge,
   Loader2,
   Sparkles,
   Trash2,
@@ -74,7 +75,7 @@ function formatVaultDate(ms: number) {
 
 export default function Dashboard() {
   useSeo();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const authToken = useAuthToken();
 
   const [topic, setTopic] = useState("");
@@ -99,6 +100,11 @@ export default function Dashboard() {
     openArticleId ? { id: openArticleId } : "skip",
   );
 
+  // ── Daily fair-use allowance (early access) ──────────────────
+  const usage = useQuery(api.usage.myUsage, isAuthenticated ? {} : "skip");
+  const draftsRemaining = usage?.remaining ?? 10;
+  const dailyLimit = usage?.limit ?? 10;
+
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const stickToBottomRef = useRef(true);
@@ -107,6 +113,7 @@ export default function Dashboard() {
   useEffect(() => () => abortRef.current?.abort(), []);
 
   const isStreaming = status === "streaming";
+  const outOfDrafts = !isStreaming && draftsRemaining <= 0;
   const wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
 
   const handleScroll = useCallback(() => {
@@ -344,12 +351,17 @@ export default function Dashboard() {
                     ? "h-11 w-full rounded-xl border-white/60 bg-white/60"
                     : "h-11 w-full rounded-xl text-[15px] shadow-lg shadow-primary/30"
                 }
-                disabled={!isStreaming && !topic.trim()}
+                disabled={outOfDrafts || (!isStreaming && !topic.trim())}
               >
                 {isStreaming ? (
                   <>
                     <CircleStop className="size-4 text-destructive" />
                     Stop generating
+                  </>
+                ) : outOfDrafts ? (
+                  <>
+                    <Gauge className="size-4" />
+                    Daily limit reached
                   </>
                 ) : (
                   <>
@@ -358,6 +370,22 @@ export default function Dashboard() {
                   </>
                 )}
               </Button>
+
+              {/* Fair-use allowance (early access) */}
+              <div className="mt-3 rounded-xl border border-white/60 bg-white/50 px-3 py-2.5">
+                <p className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/80">
+                  <Gauge className="size-3.5 text-primary" />
+                  {draftsRemaining > 0
+                    ? `${draftsRemaining} of ${dailyLimit} drafts left today`
+                    : "Today's allowance used up"}
+                </p>
+                <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+                  SeedText is in early access — to keep drafting free while our
+                  engine scales, each account gets {dailyLimit} drafts a day.
+                  This cap is temporary and will be lifted at full release.
+                  Allowances reset at midnight UTC.
+                </p>
+              </div>
             </form>
 
             {/* Quick-start examples */}
