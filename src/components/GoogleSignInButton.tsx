@@ -75,8 +75,10 @@ export function GoogleSignInButton({
   // Keep latest callbacks in refs so the GIS script only initializes once.
   const credentialCbRef = useRef(onCredential);
   const errorCbRef = useRef(onError);
-  credentialCbRef.current = onCredential;
-  errorCbRef.current = onError;
+  useEffect(() => {
+    credentialCbRef.current = onCredential;
+    errorCbRef.current = onError;
+  }, [onCredential, onError]);
 
   useEffect(() => {
     if (!clientId) return;

@@ -164,6 +164,7 @@ const CONTENT: Record<
 };
 
 export default function Legal({ kind }: { kind: LegalKind }) {
+  useSeo();
   const meta = CONTENT[kind];
   const Icon = meta.icon;
 

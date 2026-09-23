@@ -3,6 +3,7 @@ import { convexAuth } from "@convex-dev/auth/server";
 import { Anonymous } from "@convex-dev/auth/providers/Anonymous";
 import { emailOtp } from "./auth/emailOtp";
 import { internal } from "./_generated/api";
+import type { Id } from "./_generated/dataModel";
 
 /**
  * Google sign-in via Google Identity Services.
@@ -21,15 +22,18 @@ import { internal } from "./_generated/api";
  */
 export const googleProvider = ConvexCredentials({
   id: "google",
-  authorize: async (credentials, ctx) => {
+  authorize: async (
+    credentials,
+    ctx,
+  ): Promise<{ userId: Id<"users"> } | null> => {
     // The client calls signIn("google", { idToken }) — those params arrive
     // here directly (see handleCredentials in @convex-dev/auth).
     const idToken = (credentials as { idToken?: string } | undefined)?.idToken;
     if (typeof idToken !== "string" || idToken.length < 20) return null;
 
-    const profile = await verifyGoogleIdToken(idToken, ctx);
+    const profile = await verifyGoogleIdToken(idToken);
 
-    const userId: any = await ctx.runMutation(
+    const userId: Id<"users"> = await ctx.runMutation(
       internal.googleAuth.getOrCreateUser,
       {
         email: profile.email,
@@ -38,7 +42,7 @@ export const googleProvider = ConvexCredentials({
       },
     );
 
-    return { userId, sessionId: undefined } as any;
+    return { userId };
   },
 });
 
@@ -99,7 +103,6 @@ type GoogleProfile = {
  */
 async function verifyGoogleIdToken(
   token: string,
-  ctx: any,
 ): Promise<GoogleProfile> {
   const clientId = process.env.AUTH_GOOGLE_CLIENT_ID;
   if (!clientId) {
