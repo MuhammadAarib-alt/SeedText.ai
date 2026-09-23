@@ -399,6 +399,20 @@ export default function Landing() {
             <span className="font-semibold text-foreground">SeedText</span>
             <span>— niche drafts, streamed live.</span>
           </div>
+          <nav className="flex items-center gap-4">
+            <Link
+              to="/terms"
+              className="transition-colors hover:text-foreground"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              to="/privacy"
+              className="transition-colors hover:text-foreground"
+            >
+              Privacy Policy
+            </Link>
+          </nav>
           <span>Built with SeedText AI · {new Date().getFullYear()}</span>
         </div>
       </footer>

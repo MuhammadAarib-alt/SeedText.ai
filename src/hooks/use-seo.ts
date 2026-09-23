@@ -35,6 +35,18 @@ const META: Record<string, RouteMeta> = {
     description: "Your private SeedText drafting workspace.",
     noindex: true,
   },
+  "/terms": {
+    title: "Terms of Service — SeedText",
+    description:
+      "The terms that govern your use of SeedText, the free AI article draft studio.",
+    noindex: false,
+  },
+  "/privacy": {
+    title: "Privacy Policy — SeedText",
+    description:
+      "What SeedText collects, what it deliberately doesn't, and how guest mode and accounts differ.",
+    noindex: false,
+  },
 };
 
 const FALLBACK: RouteMeta = {

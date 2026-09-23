@@ -16,10 +16,13 @@ import {
 
 import { useAuth } from "@/hooks/use-auth";
 import { useSeo } from "@/hooks/use-seo";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
+import { api } from "@/convex/_generated/api";
 import logo from "@/assets/logo.png";
 import { ArrowRight, Loader2, Mail, UserX } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+import { useQuery } from "convex/react";
 
 interface AuthProps {
   redirectAfterAuth?: string;
@@ -37,7 +40,7 @@ function resolveRedirectAfterAuth(
 
 function Auth({ redirectAfterAuth }: AuthProps = {}) {
   useSeo();
-  const { isLoading: authLoading, isAuthenticated, signIn } = useAuth();
+  const { isLoading: authLoading, isAuthenticated, user, signIn } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = resolveRedirectAfterAuth(
@@ -48,12 +51,18 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { googleClientId } = useQuery(api.config.publicConfig, {}) ?? {
+    googleClientId: null,
+  };
 
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
+    // Guests (anonymous sessions) are technically authenticated — but they
+    // clicked "Sign in" to become a real user, so let them through to the
+    // form instead of bouncing them back to the workspace.
+    if (!authLoading && isAuthenticated && user?.isAnonymous !== true) {
       navigate(redirect);
     }
-  }, [authLoading, isAuthenticated, navigate, redirect]);
+  }, [authLoading, isAuthenticated, user, navigate, redirect]);
   const handleEmailSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -99,14 +108,30 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     setIsLoading(true);
     setError(null);
     try {
-      console.log("Attempting anonymous sign in...");
       await signIn("anonymous");
-      console.log("Anonymous sign in successful");
       navigate(redirect);
     } catch (error) {
       console.error("Guest login error:", error);
-      console.error("Error details:", JSON.stringify(error, null, 2));
       setError(`Failed to sign in as guest: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setIsLoading(false);
+    }
+  };
+
+  // Google Identity Services hands back an ID token; verify it server-side
+  // through the "google" auth provider and complete the sign-in.
+  const handleGoogleCredential = async (idToken: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await signIn("google", { idToken });
+      navigate(redirect);
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setError(
+        error instanceof Error
+          ? `Google sign-in failed: ${error.message}`
+          : "Google sign-in failed. Please try again.",
+      );
       setIsLoading(false);
     }
   };
@@ -169,18 +194,28 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     <p className="mt-2 text-sm text-red-500">{error}</p>
                   )}
                   
-                  <div className="mt-4">
+                  <div className="mt-5">
                     <div className="relative">
                       <div className="absolute inset-0 flex items-center">
                         <span className="w-full border-t" />
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-2 text-muted-foreground">
+                        <span className="bg-transparent px-2 text-muted-foreground backdrop-blur">
                           Or
                         </span>
                       </div>
                     </div>
-                    
+
+                    {googleClientId && (
+                      <div className="mt-4">
+                        <GoogleSignInButton
+                          clientId={googleClientId}
+                          onCredential={handleGoogleCredential}
+                          onError={(message) => setError(message)}
+                        />
+                      </div>
+                    )}
+
                     <Button
                       type="button"
                       variant="outline"

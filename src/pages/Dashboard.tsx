@@ -5,7 +5,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LogoDropdown } from "@/components/LogoDropdown";
+import { HeaderMenu } from "@/components/HeaderMenu";
 import {
   Select,
   SelectContent,
@@ -246,28 +246,17 @@ export default function Dashboard() {
       {/* ── Header ─────────────────────────────────────────────── */}
       <header className="px-4 pt-4">
         <div className="glass-panel mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl px-4">
-          <div className="flex items-center gap-3">
-            <LogoDropdown />
-            <div className="hidden sm:block">
-              <p className="text-[13px] font-semibold leading-tight text-foreground">
-                Draft workspace
-              </p>
-              <p className="text-xs leading-tight text-muted-foreground">
-                {user?.email ?? "signed in"}
-              </p>
-            </div>
+          <div className="flex items-center gap-2">
+            <HeaderMenu />
+            <span className="hidden text-[13px] font-semibold leading-tight text-foreground sm:block">
+              Draft workspace
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="glass-chip hidden text-[11px] font-medium text-muted-foreground sm:inline-flex">
               <Sparkles className="size-3 text-primary" />
               SeedText AI
             </span>
-            <Button asChild variant="outline" className="rounded-xl border-white/60 bg-white/50">
-              <a href="/">
-                <FileText className="size-4" />
-                Landing
-              </a>
-            </Button>
           </div>
         </div>
       </header>
