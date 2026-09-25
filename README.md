@@ -58,27 +58,6 @@ browser.
 Without the key set, the API returns HTTP 500 with a clear configuration
 error message instead of silently failing.
 
-## Google sign-in (optional)
-
-Sign-in with Google uses Google Identity Services and requires one public
-value — the OAuth **client ID** (no client secret needed for this flow):
-
-1. In [Google Cloud Console](https://console.cloud.google.com/) → APIs &
-   Services → Credentials, create an **OAuth client ID** (Web application).
-2. Add your app's origin (e.g. `https://your-app.vly.sh`) under **Authorized
-   JavaScript origins** — this must match exactly or Google blocks sign-in
-   with `origin_mismatch`.
-3. Set it on the deployment:
-
-   ```bash
-   bun convex env set AUTH_GOOGLE_CLIENT_ID 1234567890-xxxx.apps.googleusercontent.com
-   ```
-
-Once set, the auth page renders Google's "Continue with Google" button.
-Google-verified emails are matched to existing accounts by email, so Google
-sign-in and email-OTP land in the same account.
-
-
 # Using Authentication (Important!)
 
 You must follow these conventions when using authentication.

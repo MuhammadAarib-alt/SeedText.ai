@@ -5,6 +5,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { HeaderMenu } from "@/components/HeaderMenu";
 import {
   Select,
@@ -35,9 +36,11 @@ import {
   FileText,
   Gauge,
   Loader2,
+  Pencil,
   Sparkles,
   Trash2,
   Wand2,
+  X,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -85,6 +88,14 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // ── Edit mode (available once a draft exists) ────────────────
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedDraft, setEditedDraft] = useState("");
+  const [editingArticleId, setEditingArticleId] = useState<
+    Id<"articles"> | null
+  >(null);
+  const updateArticle = useMutation(api.articles.update);
+
   // ── Seed Vault (article history) ─────────────────────────────
   // Guests (anonymous accounts) get no history — only real sign-ins do.
   const canUseVault = !!user && user.isAnonymous !== true;
@@ -114,7 +125,11 @@ export default function Dashboard() {
 
   const isStreaming = status === "streaming";
   const outOfDrafts = !isStreaming && draftsRemaining <= 0;
-  const wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+  // While editing, the badge and Copy reflect the live edited text.
+  const shownDraft = isEditing ? editedDraft : draft;
+  const wordCount = shownDraft.trim()
+    ? shownDraft.trim().split(/\s+/).length
+    : 0;
 
   const handleScroll = useCallback(() => {
     const el = scrollRef.current;
@@ -150,6 +165,8 @@ export default function Dashboard() {
     setError(null);
     setDraft("");
     setCopied(false);
+    setIsEditing(false);
+    setEditingArticleId(null);
     stickToBottomRef.current = true;
 
     try {
@@ -223,10 +240,40 @@ export default function Dashboard() {
     setStatus("idle");
   };
 
+  // Edit mode — only offered once a draft exists, never mid-stream.
+  const startEdit = () => {
+    if (!draft || isStreaming) return;
+    setEditedDraft(draft);
+    setIsEditing(true);
+  };
+
+  const cancelEdit = () => {
+    setIsEditing(false);
+    setEditedDraft("");
+    setEditingArticleId(null);
+  };
+
+  const saveEdit = () => {
+    const next = editedDraft.trim();
+    if (!next) {
+      toast.error("Draft can't be empty — use Clear if you're done with it.");
+      return;
+    }
+    setDraft(next);
+    setIsEditing(false);
+    setEditedDraft("");
+    if (editingArticleId) {
+      void updateArticle({ id: editingArticleId, content: next })
+        .then(() => toast.success("Edits saved to your vault"))
+        .catch(() => toast.error("Couldn't save your edits to the vault"));
+    }
+    setEditingArticleId(null);
+  };
+
   const copyDraft = async () => {
-    if (!draft) return;
+    if (!shownDraft) return;
     try {
-      await navigator.clipboard.writeText(draft);
+      await navigator.clipboard.writeText(shownDraft);
       setCopied(true);
       toast.success("Draft copied to clipboard");
       setTimeout(() => setCopied(false), 2000);
@@ -240,6 +287,9 @@ export default function Dashboard() {
     setDraft("");
     setStatus("idle");
     setError(null);
+    setIsEditing(false);
+    setEditedDraft("");
+    setEditingArticleId(null);
   };
 
   return (
@@ -443,21 +493,58 @@ export default function Dashboard() {
                     Vault
                   </Button>
                 )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-lg border-white/60 bg-white/55"
-                  onClick={clearDraft}
-                  disabled={!draft && status === "idle"}
-                >
-                  <Eraser className="size-3.5" />
-                  Clear
-                </Button>
+                {isEditing ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-lg border-white/60 bg-white/55"
+                      onClick={cancelEdit}
+                    >
+                      <X className="size-3.5" />
+                      Cancel
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="rounded-lg shadow-md shadow-primary/25"
+                      onClick={saveEdit}
+                    >
+                      <Check className="size-3.5" />
+                      Done
+                    </Button>
+                  </>
+                ) : (
+                  !isStreaming &&
+                  draft &&
+                  !error && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-lg border-white/60 bg-white/55"
+                      onClick={startEdit}
+                    >
+                      <Pencil className="size-3.5" />
+                      Edit
+                    </Button>
+                  )
+                )}
+                {!isEditing && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-lg border-white/60 bg-white/55"
+                    onClick={clearDraft}
+                    disabled={!draft && status === "idle"}
+                  >
+                    <Eraser className="size-3.5" />
+                    Clear
+                  </Button>
+                )}
                 <Button
                   size="sm"
                   className="rounded-lg shadow-md shadow-primary/25"
                   onClick={() => void copyDraft()}
-                  disabled={!draft || isStreaming}
+                  disabled={!shownDraft || isStreaming}
                 >
                   {copied ? (
                     <>
@@ -487,6 +574,20 @@ export default function Dashboard() {
                     <p className="font-medium">Generation failed</p>
                     <p className="mt-0.5 text-destructive/80">{error}</p>
                   </div>
+                </div>
+              ) : isEditing ? (
+                <div className="mx-auto flex h-full max-w-3xl flex-col gap-2">
+                  <Textarea
+                    value={editedDraft}
+                    onChange={(e) => setEditedDraft(e.target.value)}
+                    className="min-h-[420px] flex-1 resize-none rounded-xl border-white/60 bg-white/70 font-mono text-[13px] leading-relaxed shadow-inner focus-visible:ring-primary/40"
+                    placeholder="Edit your draft in Markdown…"
+                    spellCheck
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    Editing in Markdown — your changes apply when you hit{" "}
+                    <span className="font-medium text-foreground/80">Done</span>.
+                  </p>
                 </div>
               ) : draft ? (
                 <article className="glass-prose max-w-3xl">
@@ -622,6 +723,29 @@ export default function Dashboard() {
                     Vault
                   </Button>
                   <div className="flex items-center gap-1.5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-lg border-white/60 bg-white/55"
+                      disabled={!openArticle}
+                      onClick={() => {
+                        if (!openArticle) return;
+                        setDraft(openArticle.content);
+                        setEditedDraft(openArticle.content);
+                        setStatus("done");
+                        setTopic(openArticle.topic);
+                        setContentStyle(
+                          openArticle.contentStyle as ContentStyle,
+                        );
+                        setEditingArticleId(openArticle._id);
+                        setIsEditing(true);
+                        setVaultOpen(false);
+                        toast.success("Editing draft in the workspace");
+                      }}
+                    >
+                      <Pencil className="size-3.5" />
+                      Edit
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"

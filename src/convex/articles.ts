@@ -86,3 +86,24 @@ export const remove = mutation({
     await ctx.db.delete(id);
   },
 });
+
+/** Edit one of your archived drafts — content changes, word count recomputed. */
+export const update = mutation({
+  args: {
+    id: v.id("articles"),
+    content: v.string(),
+  },
+  handler: async (ctx, { id, content }) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new Error("Not signed in.");
+
+    const article = await ctx.db.get(id);
+    if (!article) throw new Error("That draft no longer exists.");
+    if (article.userId !== userId) throw new Error("That draft isn't yours.");
+
+    await ctx.db.patch(id, {
+      content,
+      wordCount: content.trim() ? content.trim().split(/\s+/).length : 0,
+    });
+  },
+});

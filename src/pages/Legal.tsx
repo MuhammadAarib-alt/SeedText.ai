@@ -25,7 +25,7 @@ const TERMS: { heading: string; body: string[] }[] = [
   {
     heading: "3. Accounts",
     body: [
-      "You can use the Service as a guest or create an account with email or Google sign-in. You are responsible for activity that happens through your session, and for keeping your sign-in method secure.",
+      "You can use the Service as a guest or create an account with email. You are responsible for activity that happens through your session, and for keeping your sign-in method secure.",
       "Guest sessions are temporary by design: drafts generated in guest mode are not saved and are lost when you sign out or close your session.",
     ],
   },
@@ -84,7 +84,7 @@ const PRIVACY: { heading: string; body: string[] }[] = [
   {
     heading: "2. What we collect",
     body: [
-      "Signed-in accounts: your email address, display name, and profile picture (only if you sign in with Google), plus the drafts you save to your Seed Vault history.",
+      "Signed-in accounts: your email address, plus the drafts you save to your Seed Vault history.",
       "Guest sessions: nothing. Guest mode runs on a temporary anonymous session that stores no profile, email, or history, and guest drafts are never written to our database.",
     ],
   },
@@ -109,7 +109,7 @@ const PRIVACY: { heading: string; body: string[] }[] = [
   {
     heading: "6. Third-party processors",
     body: [
-      "SeedText runs on Convex (application hosting and database). Google sign-in is governed by Google's Privacy Policy. Sign-in codes are delivered by our email provider. These parties process data only to operate the Service.",
+      "SeedText runs on Convex (application hosting and database). Sign-in codes are delivered by our email provider. These parties process data only to operate the Service.",
     ],
   },
   {
