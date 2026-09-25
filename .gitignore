@@ -5,4 +5,10 @@
 
 node_modules
 dist
-src/convex/_generated
+
+# Convex generated code SHOULD be committed — CI builds typecheck against it
+# (docs.convex.dev/cli/reference/codegen)
+
+# Platform build snapshot + generated stubs — not source, don't ship
+isolate/
+sst-env.d.ts
