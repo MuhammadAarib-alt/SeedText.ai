@@ -419,6 +419,24 @@ export default function Landing() {
           </nav>
           <span>Built with SeedText AI · {new Date().getFullYear()}</span>
         </div>
+        {/* Listing verification badge (publishyoursaas) */}
+        <div className="mt-6 flex justify-center">
+          <a
+            href="https://publishyoursaas.com/listing/seedtext-freebuff-app"
+            target="_blank"
+            rel="noopener"
+            data-publishyoursaas-badge="seedtext-freebuff-app"
+            className="opacity-80 transition-opacity hover:opacity-100"
+          >
+            <img
+              src="https://publishyoursaas.com/publishyoursaas-badge.svg"
+              alt="SeedText is listed on publishyoursaas"
+              width={240}
+              height={60}
+              loading="lazy"
+            />
+          </a>
+        </div>
       </footer>
     </div>
   );
